@@ -45,10 +45,10 @@ Maps::RoomMap constructGameMap(const Maps::ItemMap& itemMap)
 
 	// Room manipulation block
 	bayControls->lockRoomBi(Direction::east, itemMap.at("Ключ-карта к комнате управления ангаром").get())
-		.insertItem(itemMap.at("Ключ-карта к складскому помещению").get());
+		.insertObject(itemMap.at("Ключ-карта к складскому помещению").get());
 	storageRoom->lockRoomBi(Direction::west, itemMap.at("Ключ-карта к складскому помещению").get());
 	Object table{ "Стол", "", "Обычный стальной стол.", std::vector<std::string>{"стол"} };
-	corridor2->insertSimpleObject(table).insertItem(itemMap.at("Ключ-карта к комнате управления ангаром").get());
+	corridor2->insertSimpleObject(table).insertObject(itemMap.at("Ключ-карта к комнате управления ангаром").get());
 
 	Maps::RoomMap gameMap{};
 

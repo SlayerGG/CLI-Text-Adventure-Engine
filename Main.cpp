@@ -26,7 +26,7 @@ int main()
 	bool gameIsOver{ false };
 	while (!gameIsOver)
 	{
-		gameLoop(itemMap, player);
+		gameLoop(player);
 	}
 
 	return 0;

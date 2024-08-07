@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <utility>
 
+#include "Object.h"
 #include "Direction.h"
 #include "Room.h"
 
@@ -35,7 +36,7 @@ public:
 private:
 	Room* m_currentRoom;
 
-	std::map<std::string_view, Item*> m_inventory;
+	std::map<std::string_view, Object*> m_inventory;
 
 	static inline const std::unordered_map<std::string, Action> m_actions
 	{
@@ -60,7 +61,7 @@ private:
 		std::make_pair("двери", ObjectToOpen::door),
 	};
 
-	void describeItemFromInventory(const std::vector<Item*>& itemList) const;
+	void describeItemFromInventory(const std::vector<Object*>& itemList) const;
 
 	// Checks if the door can be opened from player standpoint.
 	// room is the Room to be opened, dir is the Direction from the room view
@@ -80,7 +81,7 @@ public:
 
 	void printInventory() const;
 
-	void getItem(std::string_view itemName, const std::unordered_map<std::string_view, std::unique_ptr<Item>>& itemMap);
+	void getItem(std::string_view itemName);
 	bool ifItemInInventory(Item* itemToCheck) const;
 
 	void openSomething(std::string_view objectToOpen) const;

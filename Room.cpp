@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cassert>
 #include <iostream>
 
@@ -12,9 +13,20 @@ Room& Room::insertSimpleObject(Object object)
 	return *this;
 }
 
-Room& Room::insertItem(Item* item)
+Room& Room::insertObject(Object* object)
 {
-	m_item = item;
+	m_objects.push_back(object);
+
+	return *this;
+}
+
+Room& Room::deleteObject(const Object* object)
+{
+	assert((std::find(m_objects.begin(), m_objects.end(), object) != m_objects.end()) &&
+		"object to delete in room not found");
+
+	std::erase(m_objects, object);
+
 	return *this;
 }
 
@@ -78,8 +90,8 @@ Room& Room::linkAdjacentRoom(Room* roomToAdd, const Direction direction)
 std::ostream& operator<<(std::ostream& out, const Room& room)
 {
 	out << room.m_basicDescription;
-	if (room.m_item)
-		out << '\n' << room.m_item->getInRoomDescription();
+	for (const auto& i : room.m_objects)
+		out << '\n' << i->getInRoomDescription();
 
 	return out;
 }

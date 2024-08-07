@@ -9,7 +9,7 @@
 #include "Player.h"
 #include "TypeAliases.h"
 
-void takeAction(const Maps::ItemMap& itemMap, Player& player)
+void takeAction(Player& player)
 {
 	std::pair<std::string, std::string> input{};
 
@@ -38,7 +38,7 @@ void takeAction(const Maps::ItemMap& itemMap, Player& player)
 	case (look): { player.describeRoom(); break; }
 	case (get): {
 		if (!input.second.empty())
-			player.getItem(input.second, itemMap);
+			player.getItem(input.second);
 		else
 			std::cout << "Взять что?\n";
 		break;
@@ -62,9 +62,9 @@ void takeAction(const Maps::ItemMap& itemMap, Player& player)
 	}
 }
 
-void gameLoop(const Maps::ItemMap& itemMap, Player& player)
+void gameLoop(Player& player)
 {
-	takeAction(itemMap, player);
+	takeAction(player);
 
 	return;
 }
