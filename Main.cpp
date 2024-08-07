@@ -17,11 +17,13 @@ int main()
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
 
-	auto itemMap{ constructItems() };
+	auto roomMap{ constructRoomMap() };
 
-	auto gameMap{ constructGameMap(itemMap) };
+	auto objectMap{ constructObjects(roomMap) };
 
-	Player player{ gameMap.at("Docking bay").get()};
+	populateRooms(roomMap, objectMap);
+
+	Player player{ roomMap.at("Стыковочный отсек").get()};
 
 	bool gameIsOver{ false };
 	while (!gameIsOver)

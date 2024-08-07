@@ -11,7 +11,7 @@
 
 namespace Maps
 {
-	using ItemMap = std::unordered_map<std::string_view, std::unique_ptr<Item>>;
+	using ObjectMap = std::unordered_map<std::string_view, std::unique_ptr<Object>>;
 	using RoomMap = std::unordered_map<std::string_view, std::unique_ptr<Room>>;
 }
 

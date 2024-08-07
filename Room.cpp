@@ -1,6 +1,8 @@
 #include <algorithm>
 #include <cassert>
+#include <cstddef>
 #include <iostream>
+#include <vector>
 
 #include "Direction.h"
 #include "Room.h"
@@ -75,8 +77,8 @@ bool Room::isRoomLocked(const Direction dir)
 Room& Room::linkAdjacentRoom(Room* roomToAdd, const Direction direction)
 {
 	// Check if respective adjacent links between rooms are empty before linking
-	if ((m_adjacentRooms.at(static_cast<std::size_t>(direction)) == nullptr) &&
-		(roomToAdd->m_adjacentRooms.at(static_cast<std::size_t>(getOppositeDirection(direction))) == nullptr))
+	if (!(m_adjacentRooms.at(static_cast<std::size_t>(direction))) &&
+		!(roomToAdd->m_adjacentRooms.at(static_cast<std::size_t>(getOppositeDirection(direction)))))
 	{
 		m_adjacentRooms.at(static_cast<std::size_t>(direction)) = roomToAdd;
 		roomToAdd->m_adjacentRooms.at(static_cast<std::size_t>(getOppositeDirection(direction))) = this;
@@ -90,8 +92,17 @@ Room& Room::linkAdjacentRoom(Room* roomToAdd, const Direction direction)
 std::ostream& operator<<(std::ostream& out, const Room& room)
 {
 	out << room.m_basicDescription;
+
 	for (const auto& i : room.m_objects)
 		out << '\n' << i->getInRoomDescription();
+
+	out << "\nВыходы есть на: [";
+
+	for (std::size_t i{ 0 }; i < room.m_adjacentRooms.size(); ++i)
+		if (room.m_adjacentRooms.at(i))
+			out << getStringFromDirection(static_cast<Direction>(i)) << "е ";
+
+	out << "\b]";
 
 	return out;
 }

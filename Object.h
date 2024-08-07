@@ -12,6 +12,7 @@ private:
 	std::string m_inspectionDescription;
 	std::vector<std::string> m_keywords{};
 	bool m_canPickUp{ false };
+	bool m_canActivate{ false };
 
 public:
 	Object(std::string_view name, std::string_view inRoomDescription,
@@ -27,6 +28,8 @@ public:
 	const std::vector<std::string>& getKeywords() const { return m_keywords; }
 
 	virtual bool canPickUp() const { return m_canPickUp; }
+	virtual bool canActivate() const { return m_canActivate; }
+	virtual void activate() {};
 
 	virtual ~Object()
 	{

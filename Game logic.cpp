@@ -58,6 +58,13 @@ void takeAction(Player& player)
 			std::cout << "Рассмотреть что?\n";
 		break;
 	}
+	case (use): {
+		if (!input.second.empty())
+			player.useSomething(input.second);
+		else
+			std::cout << "Использовать что?\n";
+		break;
+	}
 	default: { std::cerr << "Unknown action passed\n"; }
 	}
 }

@@ -138,6 +138,7 @@
     <ClCompile Include="Game logic.cpp" />
     <ClCompile Include="InputFunctions.cpp" />
     <ClCompile Include="Item.cpp" />
+    <ClCompile Include="Lever.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Room.cpp" />
@@ -148,6 +149,7 @@
     <ClInclude Include="Game logic.h" />
     <ClInclude Include="InputFunctions.h" />
     <ClInclude Include="Item.h" />
+    <ClInclude Include="Lever.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Room.h" />

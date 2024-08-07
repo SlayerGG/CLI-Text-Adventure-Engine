@@ -23,6 +23,7 @@ public:
 		inventory,
 		open,
 		inspect,
+		use,
 		totalActions,
 		unknownAction
 	};
@@ -30,7 +31,8 @@ public:
 	enum ObjectToOpen
 	{
 		door,
-		totalObjects
+		totalObjects,
+		unknownObject
 	};
 
 private:
@@ -38,10 +40,11 @@ private:
 
 	std::map<std::string_view, Object*> m_inventory;
 
-	static inline const std::unordered_map<std::string, Action> m_actions
+	static inline const std::unordered_map<std::string_view, Action> m_actions
 	{
 		std::make_pair("север", Action::north),
 		std::make_pair("с", Action::north),
+		std::make_pair("c", Action::north),
 		std::make_pair("восток", Action::east),
 		std::make_pair("в", Action::east),
 		std::make_pair("юг", Action::south),
@@ -52,10 +55,11 @@ private:
 		std::make_pair("взять", Action::get),
 		std::make_pair("инвентарь", Action::inventory),
 		std::make_pair("открыть", Action::open),
-		std::make_pair("рассмотреть", Action::inspect)
+		std::make_pair("рассмотреть", Action::inspect),
+		std::make_pair("использовать", Action::use)
 	};
 
-	static inline const std::unordered_map<std::string, ObjectToOpen> m_objectsToOpen
+	static inline const std::unordered_map<std::string_view, ObjectToOpen> m_objectsToOpen
 	{
 		std::make_pair("дверь", ObjectToOpen::door),
 		std::make_pair("двери", ObjectToOpen::door),
@@ -88,8 +92,10 @@ public:
 
 	void inspectSomething(std::string_view objectToInspect) const;
 
-	static const std::unordered_map<std::string, Action>& getActions() { return m_actions; }
+	void useSomething(std::string_view objectToUse) const;
 
-	static const std::unordered_map<std::string, ObjectToOpen>& getObjectsToOpen() { return m_objectsToOpen; }
+	static const std::unordered_map<std::string_view, Action>& getActions() { return m_actions; }
+
+	static const std::unordered_map<std::string_view, ObjectToOpen>& getObjectsToOpen() { return m_objectsToOpen; }
 };
 #endif // ! PLAYER_H

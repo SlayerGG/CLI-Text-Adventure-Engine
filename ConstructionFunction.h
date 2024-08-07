@@ -8,7 +8,9 @@
 #include "Room.h"
 #include "TypeAliases.h"
 
-Maps::ItemMap constructItems();
+Maps::RoomMap constructRoomMap();
 
-Maps::RoomMap constructGameMap(const Maps::ItemMap& itemMap);
+Maps::ObjectMap constructObjects(const Maps::RoomMap& roomMap);
+
+void populateRooms(Maps::RoomMap& roomMap, const Maps::ObjectMap& objectMap);
 #endif

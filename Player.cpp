@@ -151,21 +151,11 @@ void Player::openDoorLogic() const
 			getOppositeDirection(lockedDoorDirections.at(0)));
 	else
 	{
-		std::cout << "Закрытые двери есть на ";
+		std::cout << "Закрытые двери есть на: [";
 		for (const auto& i : lockedDoorDirections)
-		{
-			switch (i)
-			{
-			using enum Direction;
-			case (north):	{ std::cout << "Севере "; break; }
-			case (east):	{ std::cout << "Востоке "; break; }
-			case (south):	{ std::cout << "Юге "; break; }
-			case (west):	{ std::cout << "Западе "; break; }
-			default:		assert("unknown locked door direction found");
-			}
-		}
+			std::cout << getStringFromDirection(i) << "е ";
 
-		std::cout << "\nДверь в каком направлении вы хотите открыть? ";
+		std::cout << "\b]\nДверь в каком направлении вы хотите открыть? ";
 		Direction inputDirection{ getDirectionInput() };
 
 		checkAndOpenDoor(m_currentRoom->getAdjacentRooms().at(static_cast<std::size_t>(inputDirection)),
@@ -189,6 +179,7 @@ void Player::openSomething(std::string_view objectToOpen) const
 
 void Player::inspectSomething(std::string_view objectToInspect) const
 {
+	// Checks simple objects for inspection first
 	bool simpleObjectFound{ false };
 	std::size_t simpleObjectIndex{0};
 	for (std::size_t i{ 0 }; i < m_currentRoom->getSimpleObjects().size(); ++i)
@@ -209,7 +200,71 @@ void Player::inspectSomething(std::string_view objectToInspect) const
 		return;
 	}
 
-	// TODO: make this function work with polymorphism
+	// Check if the player tried to inspect a door that doesn't exist as a simple object.
+	// Returns the same message for all doors.
+	// No need to inspect other openable objects here as they are regular objects
+	auto doorCheck{ m_objectsToOpen.find(objectToInspect) };
+	if ((doorCheck != m_objectsToOpen.end()) && (doorCheck->second == door))
+	{
+		std::cout << "Не вижу ничего необычного.\n";
+		return;
+	}
+
+	// Then checks for regular objects
+	bool objectFound{ false };
+	std::size_t objectIndex{ 0 };
+	for (std::size_t i{ 0 }; i < m_currentRoom->getObjects().size(); ++i)
+	{
+		if (std::find(m_currentRoom->getObjects().at(i)->getKeywords().begin(),
+			m_currentRoom->getObjects().at(i)->getKeywords().end(), objectToInspect) !=
+			m_currentRoom->getObjects().at(i)->getKeywords().end())
+		{
+			objectIndex = i;
+			objectFound = true;
+			break;
+		}
+	}
+
+	if (objectFound)
+	{
+		std::cout << m_currentRoom->getObjects().at(simpleObjectIndex)->getInspectionDescription() << '\n';
+		return;
+	}
 
 	std::cout << "Здесь нет " << objectToInspect << ".\n";
+}
+
+void Player::useSomething(std::string_view objectToUse) const
+{
+	// First checks for regular objects
+	for (const auto& object : m_currentRoom->getObjects())
+	{
+		auto objectFromKeyword{ std::find(object->getKeywords().begin(), object->getKeywords().end(), objectToUse) };
+		if ((objectFromKeyword != object->getKeywords().end()) && (object->canActivate()))
+		{
+			object->activate();
+
+			return;
+		}
+		else if (objectFromKeyword != object->getKeywords().end())
+		{
+			std::cout << "Я не могу использовать " << objectToUse << ".\n";
+
+			return;
+		}
+	}
+
+	// Then checks for simple objects
+	for (const auto& object : m_currentRoom->getSimpleObjects())
+	{
+		auto objectFromKeyword{ std::find(object.getKeywords().begin(), object.getKeywords().end(), objectToUse) };
+		if (objectFromKeyword != object.getKeywords().end())
+		{
+			std::cout << "Я не могу использовать " << objectToUse << ".\n";
+
+			return;
+		}
+	}
+
+	std::cout << "Здесь нет " << objectToUse << ".\n";
 }

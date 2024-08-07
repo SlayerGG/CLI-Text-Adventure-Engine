@@ -5,35 +5,22 @@
 #include "Object.h"
 #include "Item.h"
 #include "Room.h"
+#include "Lever.h"
 #include "TypeAliases.h"
 
-Maps::ItemMap constructItems()
-{
-	auto keycardToDockingControls{ std::make_unique<Item>("Ключ-карта к комнате управления ангаром", "На столе лежит ключ-карта.",
-		"Это ключ-карта от комнаты управления ангаром",
-		std::vector<std::string>{"карта", "карту", "ключ-карта", "ключ-карту"}) };
-
-	auto keycardToStorageRoom{ std::make_unique<Item>("Ключ-карта к складскому помещению", "На столе лежит ключ-карта.",
-		"Это ключ-карта от складского помещения",
-		std::vector<std::string>{"карта", "карту", "ключ-карта", "ключ-карту"}) };
-
-	Maps::ItemMap itemMap{};
-
-	itemMap.insert(std::make_pair(keycardToDockingControls->getName(), std::move(keycardToDockingControls)));
-	itemMap.insert(std::make_pair(keycardToStorageRoom->getName(), std::move(keycardToStorageRoom)));
-
-	return itemMap;
-}
-
 // Game map in a chart form can be found in "Map chart.drawio"
-Maps::RoomMap constructGameMap(const Maps::ItemMap& itemMap)
+Maps::RoomMap constructRoomMap()
 {
-	auto dockingBay{ std::make_unique<Room>("Это стыковочный отсек.") };
-	auto corridor1{ std::make_unique<Room>("Это коридор 1.") };
-	auto bayControls{ std::make_unique<Room>("Это комната управления стыковочным отсеком.") };
-	auto storageRoom{ std::make_unique<Room>("Это склад.") };
-	auto corridor2{ std::make_unique<Room>("Это коридор 2.") };
-	auto galley{ std::make_unique<Room>("Это столовая.") };
+	// Room creating block
+	auto dockingBay{ std::make_unique<Room>("Стыковочный отсек", "Это стыковочный отсек.") };
+	auto corridor1{ std::make_unique<Room>("Коридор 1", "Это коридор 1.") };
+	auto corridor2{ std::make_unique<Room>("Коридор 2", "Это коридор 2.") };
+	auto galley{ std::make_unique<Room>("Столовая", "Это столовая.") };
+	auto bayControls{ std::make_unique<Room>("Комната управления стыковочным отсеком", "Это комната управления стыковочным отсеком.") };
+	auto storageRoom{ std::make_unique<Room>("Склад", "Это склад.") };
+	auto engineering{ std::make_unique<Room>("Инженерный отсек", "Вы оказались в затемнённой комнате, \
+иногда освещаемой красным светом. Слышен гул работающей техники.\n\
+В углу стоит компьютер. Рядом с ним стоит шкаф.") };
 
 	// Linking block
 	dockingBay->linkAdjacentRoom(corridor1.get(), Direction::north);
@@ -42,23 +29,54 @@ Maps::RoomMap constructGameMap(const Maps::ItemMap& itemMap)
 	corridor1->linkAdjacentRoom(storageRoom.get(), Direction::east);
 	corridor2->linkAdjacentRoom(galley.get(), Direction::west);
 	bayControls->linkAdjacentRoom(galley.get(), Direction::north);
+	storageRoom->linkAdjacentRoom(engineering.get(), Direction::east);
 
-	// Room manipulation block
-	bayControls->lockRoomBi(Direction::east, itemMap.at("Ключ-карта к комнате управления ангаром").get())
-		.insertObject(itemMap.at("Ключ-карта к складскому помещению").get());
-	storageRoom->lockRoomBi(Direction::west, itemMap.at("Ключ-карта к складскому помещению").get());
-	Object table{ "Стол", "", "Обычный стальной стол.", std::vector<std::string>{"стол"} };
-	corridor2->insertSimpleObject(table).insertObject(itemMap.at("Ключ-карта к комнате управления ангаром").get());
-
-	Maps::RoomMap gameMap{};
+	Maps::RoomMap roomMap{};
 
 	// map insertion block
-	gameMap.insert(std::make_pair("Docking bay", std::move(dockingBay)));
-	gameMap.insert(std::make_pair("Corridor 1", std::move(corridor1)));
-	gameMap.insert(std::make_pair("Bay controls", std::move(bayControls)));
-	gameMap.insert(std::make_pair("Corridor 2", std::move(corridor2)));
-	gameMap.insert(std::make_pair("Storage room", std::move(storageRoom)));
-	gameMap.insert(std::make_pair("Galley", std::move(galley)));
+	roomMap.insert(std::make_pair(dockingBay->getName(), std::move(dockingBay)));
+	roomMap.insert(std::make_pair(corridor1->getName(), std::move(corridor1)));
+	roomMap.insert(std::make_pair(bayControls->getName(), std::move(bayControls)));
+	roomMap.insert(std::make_pair(corridor2->getName(), std::move(corridor2)));
+	roomMap.insert(std::make_pair(storageRoom->getName(), std::move(storageRoom)));
+	roomMap.insert(std::make_pair(galley->getName(), std::move(galley)));
+	roomMap.insert(std::make_pair(engineering->getName(), std::move(engineering)));
 
-	return gameMap;
+	return roomMap;
+}
+
+Maps::ObjectMap constructObjects(const Maps::RoomMap& roomMap)
+{
+	auto keycardToDockingControls{ std::make_unique<Item>("Ключ-карта к комнате управления ангаром", "На столе лежит ключ-карта.",
+		"Это ключ-карта от комнаты управления ангаром",
+		std::vector<std::string>{"карта", "карту", "ключ-карта", "ключ-карту"}) };
+
+	auto leverToStorage{ std::make_unique<Lever>("Рычаг к складу", "На полу стоит большой рычаг.", "Обычный стальной рычаг.",
+	std::vector<std::string>{"рычаг"}, "Вы потянули рычаг.\nНа востоке слышен звук открывающейся двери.",
+		"Этот рычаг уже активирован. Он открыл что-то на востоке.",
+		roomMap.at("Склад").get(), Direction::west)};
+
+	Maps::ObjectMap objectMap{};
+
+	objectMap.insert(std::make_pair(keycardToDockingControls->getName(), std::move(keycardToDockingControls)));
+	objectMap.insert(std::make_pair(leverToStorage->getName(), std::move(leverToStorage)));
+
+	return objectMap;
+}
+
+void populateRooms(Maps::RoomMap& roomMap, const Maps::ObjectMap& objectMap)
+{
+	roomMap.at("Комната управления стыковочным отсеком")->lockRoomBi(Direction::east, 
+		dynamic_cast<Item*>(objectMap.at("Ключ-карта к комнате управления ангаром").get()))
+		.insertObject(objectMap.at("Рычаг к складу").get());
+	roomMap.at("Склад")->lockRoomBi(Direction::west);
+	Object table{ "Стол", "", "Обычный стальной стол.", std::vector<std::string>{"стол"} };
+	roomMap.at("Коридор 2")->insertSimpleObject(table).insertObject(objectMap.at("Ключ-карта к комнате управления ангаром").get());
+	Object computer{ "Компьютер", "", "Компьютер выключен. Похоже, у него нет питания.", std::vector<std::string>{"компьютер"} };
+	Object drawer{ "Шкаф", "", "Металлический шкаф с подсветкой вверху. Ящики закрыты. Вы не видите замка.",
+	std::vector<std::string>{"шкаф"} };
+	Object machinery{ "Техника", "", "Большие коробки и цилиндры с дверцами, внутри которых слышен гул. Дверцы закрыты.",
+		std::vector<std::string>{"техника", "технику"} };
+	roomMap.at("Инженерный отсек")->insertSimpleObject(computer).insertSimpleObject(drawer)
+		.insertSimpleObject(machinery);
 }

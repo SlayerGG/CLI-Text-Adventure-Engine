@@ -1,5 +1,7 @@
+#include <cassert>
 #include <cstdint>
 #include <stdexcept>
+#include <string_view>
 
 #include "Direction.h"
 
@@ -25,4 +27,19 @@ std::uint8_t getMaskFromDirection(Direction dir)
 	case Direction::west:	return DirectionMap::west;
 	default:				throw std::runtime_error{ "Unknown direction passed to getDirectionMaskFromDirection" };
 	}
+}
+
+std::string_view getStringFromDirection(const Direction direction)
+{
+	switch (direction)
+	{
+	using enum Direction;
+	case (north):	{ return "север"; }
+	case (east):	{ return "восток"; }
+	case (south):	{ return "юг"; }
+	case (west):	{ return "запад"; }
+	default:		assert("unknown locked door direction found");
+	}
+
+	return "error";
 }

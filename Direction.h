@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <string>
+#include <string_view>
 #include <unordered_map>
 
 enum class Direction
@@ -41,4 +42,5 @@ namespace DirectionMap
 
 Direction getOppositeDirection(Direction dir);
 std::uint8_t getMaskFromDirection(Direction dir);
+std::string_view getStringFromDirection(const Direction direction);
 #endif
