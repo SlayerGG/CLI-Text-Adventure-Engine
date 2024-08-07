@@ -17,7 +17,7 @@ Maps::RoomMap constructRoomMap()
 	auto corridor2{ std::make_unique<Room>("Коридор 2", "Это коридор 2.") };
 	auto galley{ std::make_unique<Room>("Столовая", "Это столовая.") };
 	auto bayControls{ std::make_unique<Room>("Комната управления стыковочным отсеком", "Это комната управления стыковочным отсеком.") };
-	auto storageRoom{ std::make_unique<Room>("Склад", "Это склад.") };
+	auto storageRoom{ std::make_unique<Room>("Склад", "Это склад.", true) };
 	auto engineering{ std::make_unique<Room>("Инженерный отсек", "Вы оказались в затемнённой комнате, \
 иногда освещаемой красным светом. Слышен гул работающей техники.\n\
 В углу стоит компьютер. Рядом с ним стоит шкаф.") };
@@ -48,7 +48,7 @@ Maps::RoomMap constructRoomMap()
 Maps::ObjectMap constructObjects(const Maps::RoomMap& roomMap)
 {
 	auto keycardToDockingControls{ std::make_unique<Item>("Ключ-карта к комнате управления ангаром", "На столе лежит ключ-карта.",
-		"Это ключ-карта от комнаты управления ангаром",
+		"Это ключ-карта от комнаты управления ангаром.",
 		std::vector<std::string>{"карта", "карту", "ключ-карта", "ключ-карту"}) };
 
 	auto leverToStorage{ std::make_unique<Lever>("Рычаг к складу", "На полу стоит большой рычаг.", "Обычный стальной рычаг.",

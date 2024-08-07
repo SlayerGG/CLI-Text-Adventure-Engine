@@ -31,19 +31,19 @@ void takeAction(Player& player)
 	switch (action)
 	{
 		using enum Player::Action;
-	case (north): { player.move(Direction::north); break; }
-	case (east): { player.move(Direction::east); break; }
-	case (south): { player.move(Direction::south); break; }
-	case (west): { player.move(Direction::west); break; }
-	case (look): { player.describeRoom(); break; }
+	case (north):		{ player.move(Direction::north); break; }
+	case (east):		{ player.move(Direction::east); break; }
+	case (south):		{ player.move(Direction::south); break; }
+	case (west):		{ player.move(Direction::west); break; }
+	case (look):		{ player.describeRoom(); break; }
 	case (get): {
 		if (!input.second.empty())
-			player.getItem(input.second);
+			player.takeItem(input.second);
 		else
 			std::cout << "Взять что?\n";
 		break;
 	}
-	case (inventory): { player.printInventory(); break; }
+	case (inventory):	{ player.printInventory(); break; }
 	case (open): {
 		if (!input.second.empty())
 			player.openSomething(input.second);
@@ -65,7 +65,9 @@ void takeAction(Player& player)
 			std::cout << "Использовать что?\n";
 		break;
 	}
-	default: { std::cerr << "Unknown action passed\n"; }
+	case (rest):		{ player.restHere(); break; }
+	case (go_back):		{ player.goBack(); break; }
+	default:			{ std::cerr << "Unknown action passed\n"; }
 	}
 }
 

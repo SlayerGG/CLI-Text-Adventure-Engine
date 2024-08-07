@@ -19,9 +19,11 @@ private:
 	std::array<Item*, static_cast<int>(Direction::totalDirections)> m_itemToOpenDoor{};
 	std::vector<Object> m_simpleObjects;
 	std::vector<Object*> m_objects;
+	bool m_isSafeRoom{};
 
 public:
-	Room(std::string_view name, std::string_view description) : m_name{ name }, m_basicDescription { description }
+	Room(std::string_view name, std::string_view description, bool isSafeRoom = false)
+		: m_name{ name }, m_basicDescription { description }, m_isSafeRoom{isSafeRoom}
 	{
 	}
 
@@ -46,6 +48,8 @@ public:
 	Room& insertObject(Object* object);
 	Room& deleteObject(const Object* object);
 	const std::vector<Object*>& getObjects() const { return m_objects; }
+
+	bool getIsSafeRoom() const { return m_isSafeRoom; }
 
 	std::string_view getName() const { return m_name; }
 

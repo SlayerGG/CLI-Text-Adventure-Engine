@@ -24,6 +24,8 @@ public:
 		open,
 		inspect,
 		use,
+		rest,
+		go_back,
 		totalActions,
 		unknownAction
 	};
@@ -36,9 +38,11 @@ public:
 	};
 
 private:
-	Room* m_currentRoom;
+	Room* m_currentRoom{};
 
 	std::map<std::string_view, Object*> m_inventory;
+
+	Room* m_checkpointRoom{};
 
 	static inline const std::unordered_map<std::string_view, Action> m_actions
 	{
@@ -56,13 +60,16 @@ private:
 		std::make_pair("инвентарь", Action::inventory),
 		std::make_pair("открыть", Action::open),
 		std::make_pair("рассмотреть", Action::inspect),
-		std::make_pair("использовать", Action::use)
+		std::make_pair("осмотреть", Action::inspect),
+		std::make_pair("использовать", Action::use),
+		std::make_pair("отдохнуть", Action::rest),
+		std::make_pair("вернуться", Action::go_back)
 	};
 
 	static inline const std::unordered_map<std::string_view, ObjectToOpen> m_objectsToOpen
 	{
 		std::make_pair("дверь", ObjectToOpen::door),
-		std::make_pair("двери", ObjectToOpen::door),
+		std::make_pair("двери", ObjectToOpen::door)
 	};
 
 	void describeItemFromInventory(const std::vector<Object*>& itemList) const;
@@ -79,13 +86,16 @@ public:
 	{
 	}
 
-	bool move( const Direction dir );
+	void move( const Direction dir );
 
+	void teleport(Room* room);
+	// Pulls the basic room description, as well as all the objects descriptions
+	// and other flag-dependent descriptions
 	void describeRoom() const;
-
+	// Print inventory and let player chose an item for description
 	void printInventory() const;
 
-	void getItem(std::string_view itemName);
+	void takeItem(std::string_view itemName);
 	bool ifItemInInventory(Item* itemToCheck) const;
 
 	void openSomething(std::string_view objectToOpen) const;
@@ -93,6 +103,10 @@ public:
 	void inspectSomething(std::string_view objectToInspect) const;
 
 	void useSomething(std::string_view objectToUse) const;
+
+	void restHere();
+
+	void goBack();
 
 	static const std::unordered_map<std::string_view, Action>& getActions() { return m_actions; }
 

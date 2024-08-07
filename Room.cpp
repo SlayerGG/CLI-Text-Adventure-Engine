@@ -60,7 +60,7 @@ Room& Room::openRoom(const Direction lockedDoorDirection)
 
 	m_itemToOpenDoor.at(static_cast<std::size_t>(lockedDoorDirection)) = nullptr;
 
-	// Unlock the door on the other side if the room is also locked
+	// Unlock the door on the other side if that room is also locked
 	if (m_adjacentRooms.at(static_cast<std::size_t>(lockedDoorDirection)) &&
 		m_adjacentRooms.at(static_cast<std::size_t>(lockedDoorDirection))->isRoomLocked(getOppositeDirection(lockedDoorDirection)))
 			m_adjacentRooms.at(static_cast<std::size_t>(lockedDoorDirection))->openRoom(getOppositeDirection(lockedDoorDirection));
@@ -95,6 +95,9 @@ std::ostream& operator<<(std::ostream& out, const Room& room)
 
 	for (const auto& i : room.m_objects)
 		out << '\n' << i->getInRoomDescription();
+
+	if (room.getIsSafeRoom())
+		std::cout << "\nЭта комната выглядит безопасной. Вы можете (отдохнуть) здесь.";
 
 	out << "\nВыходы есть на: [";
 

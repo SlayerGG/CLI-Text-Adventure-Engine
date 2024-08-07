@@ -9,30 +9,30 @@
 #include "Player.h"
 #include "InputFunctions.h"
 
-bool Player::move(const Direction dir)
+void Player::move(const Direction dir)
 {
-	if (m_currentRoom->getAdjacentRooms().at(static_cast<std::size_t>(dir)) == nullptr)
+	if (!m_currentRoom->getAdjacentRooms().at(static_cast<std::size_t>(dir)))
 	{
 		std::cout << "Туда нельзя идти.\n";
-
-		return false;
 	}
 	else if (m_currentRoom->getAdjacentRooms().at(static_cast<std::size_t>(dir))->
 		isRoomLocked(getOppositeDirection(dir)))
 	{
 		std::cout << "Дверь заперта. Туда нельзя идти.\n";
-
-		return false;
 	}
-	else if (m_currentRoom->getAdjacentRooms().at(static_cast<std::size_t>(dir)) != nullptr)
+	else if (m_currentRoom->getAdjacentRooms().at(static_cast<std::size_t>(dir)))
 	{
 		m_currentRoom = m_currentRoom->getAdjacentRooms().at(static_cast<std::size_t>(dir));
 		describeRoom();
-
-		return true;
 	}
+}
 
-	return false;
+void Player::teleport(Room* room)
+{
+	if (room)
+		m_currentRoom = room;
+	else
+		assert("couldn't teleport, room doesn't exist");
 }
 
 void Player::describeRoom() const
@@ -70,7 +70,7 @@ void Player::printInventory() const
 	}
 }
 
-void Player::getItem(std::string_view itemName)
+void Player::takeItem(std::string_view itemName)
 {
 	// First checks for regular objects
 	for (const auto& object : m_currentRoom->getObjects())
@@ -267,4 +267,31 @@ void Player::useSomething(std::string_view objectToUse) const
 	}
 
 	std::cout << "Здесь нет " << objectToUse << ".\n";
+}
+
+void Player::restHere()
+{
+	if (!m_currentRoom->getIsSafeRoom())
+		std::cout << "Вы не чувствуете себя достаточно безопасно, чтобы отдыхать здесь.\n";
+	else
+	{
+		m_checkpointRoom = m_currentRoom;
+
+		std::cout << "Вы присаживаетесь и решаете немного отдохнуть.\n"
+			<< "Теперь вы можете мгновенно (вернуться) в эту комнату.\n";
+	}
+}
+
+void Player::goBack()
+{
+	if (!m_checkpointRoom)
+		std::cout << "Вы ещё не отдыхали в безопасном месте, чтобы можно было вернуться.\n";
+	else if (m_checkpointRoom == m_currentRoom)
+		std::cout << "Вы уже в комнате, в которой отдыхали последний раз.\n";
+	else
+	{
+		std::cout << "Вы возвращаетесь к комнате, в которой последний раз отдыхали.\n";
+
+		teleport(m_checkpointRoom);
+	}
 }
