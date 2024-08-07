@@ -5,9 +5,9 @@
 #include "Room.h"
 #include "Player.h"
 
-Room& Room::insertObject(Object object)
+Room& Room::insertSimpleObject(Object object)
 {
-	m_objects.push_back(std::move(object));
+	m_simpleObjects.push_back(std::move(object));
 
 	return *this;
 }

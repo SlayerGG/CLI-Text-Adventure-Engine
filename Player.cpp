@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cassert>
 #include <cstddef>
 #include <iostream>
@@ -174,7 +175,27 @@ void Player::openSomething(std::string_view objectToOpen) const
 
 void Player::inspectSomething(std::string_view objectToInspect) const
 {
+	bool simpleObjectFound{ false };
+	std::size_t simpleObjectIndex{0};
+	for (std::size_t i{ 0 }; i < m_currentRoom->getSimpleObjects().size(); ++i)
+	{
+		if (std::find(m_currentRoom->getSimpleObjects().at(i).getKeywords().begin(), 
+			m_currentRoom->getSimpleObjects().at(i).getKeywords().end(), objectToInspect) !=
+			m_currentRoom->getSimpleObjects().at(i).getKeywords().end())
+		{
+			simpleObjectIndex = i;
+			simpleObjectFound = true;
+			break;
+		}
+	}
 
+	if (simpleObjectFound)
+	{
+		std::cout << m_currentRoom->getSimpleObjects().at(simpleObjectIndex).getInspectionDescription() << '\n';
+		return;
+	}
+
+	// TODO: make this function work with polymorphism
 
 	std::cout << "Çהוסü םוע " << objectToInspect << ".\n";
 }

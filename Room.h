@@ -16,7 +16,9 @@ private:
 	std::string_view m_basicDescription;
 	std::uint8_t m_lockedRoomDirectionsFlags{0b0000}; // using bit manipulation
 	std::array<Item*, static_cast<int>(Direction::totalDirections)> m_itemToOpenDoor{};
-	std::vector<Object> m_objects;
+	std::vector<Object> m_simpleObjects;
+	// TODO: apply polymorphism here with a map so that it's possible to store
+	// objects of any derived type
 	Item* m_item{};
 
 public:
@@ -40,7 +42,10 @@ public:
 		return m_itemToOpenDoor.at(static_cast<std::size_t>(lockedDoorDirection));
 	}
 
-	Room& insertObject(Object object);
+	Room& insertSimpleObject(Object object);
+	// TODO: implement deleteObject and getObjectPtr
+	Room& deleteObject(const Object& object);
+	const std::vector<Object>& getSimpleObjects() const{ return m_simpleObjects; }
 
 	Room& insertItem(Item* item);
 	void deleteItem() { m_item = nullptr; }
