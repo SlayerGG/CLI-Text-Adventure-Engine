@@ -11,6 +11,7 @@ private:
 	std::string m_inRoomDescription;
 	std::string m_inspectionDescription;
 	std::vector<std::string> m_keywords{};
+	bool m_canPickUp{ false };
 
 public:
 	Object(std::string_view name, std::string_view inRoomDescription,
@@ -24,6 +25,8 @@ public:
 	std::string_view getInRoomDescription() const { return m_inRoomDescription; }
 	std::string_view getInspectionDescription() const { return m_inspectionDescription; }
 	const std::vector<std::string>& getKeywords() const { return m_keywords; }
+
+	virtual bool canPickUp() const { return m_canPickUp; }
 
 	virtual ~Object()
 	{

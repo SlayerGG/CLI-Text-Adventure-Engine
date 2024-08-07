@@ -40,7 +40,7 @@ void Player::describeRoom() const
 	std::cout << *m_currentRoom << '\n';
 }
 
-void Player::describeItemFromInventory(const std::vector<Item*>& itemList) const
+void Player::describeItemFromInventory(const std::vector<Object*>& itemList) const
 {
 	int choice{ getInventoryInput(itemList.size()) };
 
@@ -58,7 +58,7 @@ void Player::printInventory() const
 	{
 		std::cout << "В вашем инвентаре сейчас:\n";
 
-		std::vector<Item*> itemList{};
+		std::vector<Object*> itemList{};
 
 		for (const auto& item : m_inventory)
 			itemList.push_back(item.second);
@@ -70,29 +70,43 @@ void Player::printInventory() const
 	}
 }
 
-void Player::getItem(std::string_view itemName, const std::unordered_map<std::string_view, std::unique_ptr<Item>>& itemMap)
+void Player::getItem(std::string_view itemName)
 {
-	if (m_currentRoom->getItemPtr())
+	// First checks for regular objects
+	for (const auto& object : m_currentRoom->getObjects())
 	{
-		auto itemFromKeyword{ std::find(m_currentRoom->getItemPtr()->getKeywords().begin(),
-		   m_currentRoom->getItemPtr()->getKeywords().end(), itemName) };
-		if (itemFromKeyword != m_currentRoom->getItemPtr()->getKeywords().end())
+		auto objectFromKeyword{ std::find(object->getKeywords().begin(), object->getKeywords().end(), itemName) };
+		if ((objectFromKeyword != object->getKeywords().end()) && (object->canPickUp()))
 		{
-			for (const auto& i : itemMap)
-			{
-				if (i.second.get() == m_currentRoom->getItemPtr())
-					m_inventory.insert(std::make_pair(i.first, i.second.get()));
-			}
-			m_currentRoom->deleteItem();
+			m_inventory.insert(std::make_pair(object->getName(), object));
+
+			m_currentRoom->deleteObject(object);
 
 			std::cout << "Вы подобрали: " << prev(m_inventory.end())->second->getName() << ".\n";
+
+			return;
+		}
+		else if (objectFromKeyword != object->getKeywords().end())
+		{
+			std::cout << "Мне не нужно брать с собой " << itemName << ".\n";
+
+			return;
+		}
+	}
+
+	// Then checks for simple objects
+	for (const auto& object : m_currentRoom->getSimpleObjects())
+	{
+		auto objectFromKeyword{ std::find(object.getKeywords().begin(), object.getKeywords().end(), itemName) };
+		if (objectFromKeyword != object.getKeywords().end())
+		{
+			std::cout << "Мне не нужно брать с собой " << itemName << ".\n";
 
 			return;
 		}
 	}
 
 	std::cout << "Здесь нет " << itemName << ".\n";
-
 }
 
 bool Player::ifItemInInventory(Item* itemToCheck) const

@@ -9,5 +9,5 @@
 #include "Player.h"
 #include "TypeAliases.h"
 
-void gameLoop(const Maps::ItemMap& itemMap, Player& player);
+void gameLoop(Player& player);
 #endif
