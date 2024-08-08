@@ -5,7 +5,7 @@
 
 #include "Direction.h"
 
-Direction getOppositeDirection(Direction dir)
+Direction getOppositeDirection(const Direction dir)
 {
 	switch (dir)
 	{
@@ -17,7 +17,7 @@ Direction getOppositeDirection(Direction dir)
 	}
 }
 
-std::uint8_t getMaskFromDirection(Direction dir)
+std::uint8_t getMaskFromDirection(const Direction dir)
 {
 	switch (dir)
 	{

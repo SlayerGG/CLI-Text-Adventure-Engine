@@ -68,7 +68,7 @@ Room& Room::openRoom(const Direction lockedDoorDirection)
 	return *this;
 }
 
-bool Room::isRoomLocked(const Direction dir)
+bool Room::isRoomLocked(const Direction dir) const
 {
 	return (m_lockedRoomDirectionsFlags & getMaskFromDirection(dir));
 }
@@ -103,7 +103,11 @@ std::ostream& operator<<(std::ostream& out, const Room& room)
 
 	for (std::size_t i{ 0 }; i < room.m_adjacentRooms.size(); ++i)
 		if (room.m_adjacentRooms.at(i))
+		{
 			out << getStringFromDirection(static_cast<Direction>(i)) << "е ";
+			if (room.isRoomLocked(static_cast<Direction>(i)))
+				out << "\b(заперто) ";
+		}
 
 	out << "\b]";
 

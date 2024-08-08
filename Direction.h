@@ -40,7 +40,7 @@ namespace DirectionMap
 	constexpr std::uint8_t west{ 0b1000 };
 }
 
-Direction getOppositeDirection(Direction dir);
-std::uint8_t getMaskFromDirection(Direction dir);
+Direction getOppositeDirection(const Direction dir);
+std::uint8_t getMaskFromDirection(const Direction dir);
 std::string_view getStringFromDirection(const Direction direction);
 #endif

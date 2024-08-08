@@ -36,7 +36,7 @@ public:
 	// Locks the room in both directions
 	Room& lockRoomBi(const Direction lockedRoomDirection, Item* itemToOpenDoor = nullptr);
 	Room& openRoom(const Direction lockedRoomDirection);
-	bool isRoomLocked(const Direction dir);
+	bool isRoomLocked (const Direction dir) const;
 	Item* getItemToOpenDoorPtr(const Direction lockedDoorDirection) const {
 		return m_itemToOpenDoor.at(static_cast<std::size_t>(lockedDoorDirection));
 	}
